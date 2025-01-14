@@ -1,8 +1,21 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectdb from './utils/database.js';
+import userRouter from './src/routes/user.route.js';
 const app = express();
+app.use(express.json());
+app.use()
+const corsOptions = {
+  origin: 'http://localhost:5173/',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 dotenv.config({});
+//routes
+app.use('/user', userRouter);
+
+
+
 const PORT = process.env.PORT;
 connectdb()
   .then(() => {
