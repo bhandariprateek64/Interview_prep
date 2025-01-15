@@ -2,7 +2,6 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model';
-import authMiddleware from '../middlewares/authMiddleware';
 
 const userRouter = express.Router();
 
@@ -38,7 +37,6 @@ userRouter.post('/signup', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
 userRouter.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -67,32 +65,7 @@ userRouter.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-userRouter.post('/documents', authMiddleware, async (req, res) => {
-  const { rating } = req.body;
 
-  try {
-    const user = req.user; // Get authenticated user from middleware
 
-    // Update the user's rating if it's null
-    if (user.currentRating === null) {
-      user.currentRating = rating;
-      await user.save();
-    }
-
-    // Fetch documents with rating >= (rating - 1) and limit to 100
-    const documents = await Document.find({ rating: { $gte: rating - 1 } })
-      .limit(100)
-      .select('name link');
-
-    // Send response
-    res.status(200).json({
-      questionsList: documents,
-      solvedQuestions: user.completedQuestionNames,
-    });
-  } catch (error) {
-    console.error('Error fetching documents:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
 
 export default userRouter;
