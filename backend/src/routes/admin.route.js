@@ -1,5 +1,7 @@
 import express from 'express';
-import authMiddleware from '../middlewares/authMiddleware';
+import authMiddleware from '../middlewares/authMiddleware.js';
+import Document from '../models/document.model.js';
+import User from '../models/user.model.js';
 const adminRouter = express.Router();
 
 // Fetch documents based on rating
@@ -43,7 +45,8 @@ adminRouter.post('/documents', authMiddleware, async (req, res) => {
 });
 
 // Update completed questions for a user
-adminRouter.post('/update-completed-questions',
+adminRouter.post(
+  '/update-completed-questions',
   authMiddleware,
   async (req, res) => {
     const { questionId } = req.body;
@@ -82,7 +85,8 @@ adminRouter.post('/update-completed-questions',
 );
 
 // Remove completed questions for a user
-adminRouter.post('/remove-completed-questions',
+adminRouter.post(
+  '/remove-completed-questions',
   authMiddleware,
   async (req, res) => {
     const { questionId } = req.body;

@@ -1,12 +1,12 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/user.model';
+import User from '../models/user.model.js';
 
 const userRouter = express.Router();
 
 userRouter.post('/signup', async (req, res) => {
-  const { fullName, email, password } = req.body;
+  const { fullName, email, password, phoneNumber } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -20,6 +20,7 @@ userRouter.post('/signup', async (req, res) => {
       fullName,
       email,
       password: encryptedPassword,
+      phoneNumber,
       currentRating: null,
       completedQuestionNames: [],
     });
@@ -34,7 +35,10 @@ userRouter.post('/signup', async (req, res) => {
       email,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Detailed error:', error); // Log the full error stack
+    res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: error.message });
   }
 });
 userRouter.post('/login', async (req, res) => {
@@ -62,10 +66,11 @@ userRouter.post('/login', async (req, res) => {
     res.cookie('token', token);
     res.status(200).json({ message: 'Login successful.' });
   } catch (error) {
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Detailed error:', error); // Log the full error stack
+    res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: error.message });
   }
 });
-
-
 
 export default userRouter;

@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/user.model';
+import User from '../models/user.model.js';
 
 // Middleware to authenticate user by token and attach user to the request object
 const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+    const token = req.cookies.token;
     if (!token) {
       return res
         .status(401)
